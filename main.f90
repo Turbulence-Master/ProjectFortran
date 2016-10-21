@@ -3,16 +3,14 @@ program integrator
 use tools
 implicit none
 integer :: n
-real :: a,b,res
+real :: a,b
 
 a = 0
-b = 10
+b = 1
 n = 200
 
-res = rectangle(a,b,n)
-print*, 'rectangle =', res
+call rectangle(a,b,n)
 
-res = trapezoid(a,b,n)
-print*, 'trapezoid =', res
+call trapezoid(a,b,n)
 
 end program integrator
