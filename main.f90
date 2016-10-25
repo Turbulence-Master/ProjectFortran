@@ -1,4 +1,4 @@
-!! teste doxygen
+!> Main program
 program integrator
 use tools
 implicit none

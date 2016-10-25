@@ -1,3 +1,4 @@
+!> Module with tools
 module tools
 implicit none
 private
@@ -5,6 +6,11 @@ private
 public rectangle
 public trapezoid
 contains
+    !> Subroutine for using the rectangle method
+    !! method
+    !! @param a, b Lower and Upper range
+    !! @param n Number of domain division
+    !! @todo more test cases
     subroutine rectangle(a, b, n)
     implicit none
     integer :: i,j,n
@@ -21,6 +27,11 @@ contains
     print*, 'Rectangle =', res, 'error =', error, 'total =', res + error
     end subroutine
 
+    !> Subroutine for using the trapezoid method
+    !! method
+    !! @param a, b Lower and Upper range
+    !! @param n Number of domain division
+    !! @todo more test cases
     subroutine trapezoid(a, b, n)
     implicit none
     integer :: i,j,n
