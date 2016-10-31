@@ -12,6 +12,8 @@ Set of mathematical tools to help master students projects, homeworks developped
 pFUnit http://pfunit.sourceforge.net/
 
 # Installation
+1.) Inside the folder directory type 'make'
+2.) Execute './main'
 
 # Documentation
 
