@@ -8,7 +8,7 @@ FLAGS = -Wall -fcheck=bounds
 OBJECTS = tools.o
 
 $(BIN_PATH)/math: $(OBJECTS)
-	mkdir $(BIN_PATH)
+	mkdir -p $(BIN_PATH)
 	gfortran $(OBJECTS) main.f90 -o $(BIN_PATH)/math $(FLAGS)
 
 tools.o: tools.f90
