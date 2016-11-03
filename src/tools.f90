@@ -20,7 +20,7 @@ contains
     real :: a,b,h,temp,xi,res,error
     temp = 0
     h = (b - a) / n
-    do i = 1,n
+    do i = 0,n-1
         xi = (a + h*i)
         !temp = temp + xi**4 -xi**3
         temp = temp + (3 + 2*xi + 5*xi**2)
