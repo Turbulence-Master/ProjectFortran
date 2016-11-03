@@ -1,3 +1,18 @@
+!------------------------------------------------------------------------------
+! IMPT, ProjectFortran
+!------------------------------------------------------------------------------
+!
+! MODULE: precision
+!
+!> @author
+!> Module Author Ilkay Solak
+!
+! DESCRIPTION: 
+!> Defines the precision of floats and integers
+!
+! REVISION HISTORY:
+! 03 11 2016 - Initial Version
+!------------------------------------------------------------------------------
 module precision
   implicit none
   ! explicit visibility declaration
