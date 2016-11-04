@@ -27,22 +27,29 @@ git clone https://github.com/Turbulence-Master/ProjectFortran.git <br />
 git pull <br />
 
 ! change to your own branch (do not make changes directly to master) <br /> 
-git checkout -b NAME_OF_BRANCH <br />
+git checkout -b BRANCH_NAME <br />
 
 ! add files to be inserted or changed in the project <br />
-git add FILE_HERE <br />
+git add FILE_NAME <br />
 
 ! commit your changes to your LOCAL repository <br />
 git commit -m "message here" <br />
 
 ! send your LOCAL changes to the REMOTE (upstream) repository <br />
-git push -u origin NAME_OF_BRANCH<br />
-or
+git push -u origin BRANCH_NAME<br />
+or <br />
 git push (if commiting directly to master branch) <br />
 
 ! merge changes from your branch to master branch <br />
 git checkout master <br />
-git merge NAME_OF_BRANCH <br />
+git merge BRANCH_NAME <br />
+
+! after merging, you can delete your branch <br />
+git branch -d BRANCH_NAME <br />
+
+! and send the information of the branch deletion upstream <br />
+git push origin --delete BRANCH_NAME
 
 ! clears the files created by you, start over, discard changes (be careful) <br /> 
 git clean -d -x -f <br />
+
