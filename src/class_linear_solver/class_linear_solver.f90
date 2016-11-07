@@ -1,3 +1,3 @@
-module Linear_Solver
+module linear_solver
   implicit none
-end module Linear_Solver
+end module linear_solver
