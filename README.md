@@ -16,6 +16,18 @@ pFUnit http://pfunit.sourceforge.net/
 2.) Execute the math binary file in the newly created folder /bin 
 
 # Documentation
+The documentation of this project is handled by Doxygen. Please make the comments on your code according to the following example: <br />
+|Code  style | explanation|
+|------------|------------|
+|!> Subroutine for using the midpoint method| here you describe your subroutine|
+|    !! method| saying that this is a method|
+|    !! @param a, b Lower and Upper range| the input parameter, with description|
+|    !! @param n Number of domain division| more input parameters
+|    !! @todo more test cases| this creates a "to do" section on the documentation|
+|    subroutine midpoint(a, b, n)| sample code|
+|    implicit none| sample code|
+|    integer :: i,j,n| sample code|
+|    real :: a,b,h,temp,xi,res,error| sample code|
 
 # License
 
