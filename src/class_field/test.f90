@@ -1,20 +1,25 @@
 program test_types
+  use class_field
+  use precision
+  implicit none
 
-use class_field
+  integer(ik) :: i
+  ! declare a derived type variable
+  type(field) :: my1dfield
 
-integer(ik) :: i
-real(rk) :: y
-integer(
-type(field) :: my1dfield
 
-my1dfield%nx = 2.32
+  ! Type field always requires it's init
+  call field_init(my1dfield,'name_my1dfield',10,1,1)
 
-y = 2.123456789
+  ! Show dimension of the type field
+  print*, my1dfield%nx, my1dfield%ny, my1dfield%nz
 
-do i=1,10
-    print*, i
-    print*, i*y
-end do
+  ! Add data in to the type field array, which is 'f'
+  do i=1,10
+    my1dfield%f(i,1,1) = i
+  end do
 
+  ! Print the array
+  print*, my1dfield%f
 
 end program test_types
