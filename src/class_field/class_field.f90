@@ -23,9 +23,9 @@ module class_field
      integer(ik) :: nx,ny,nz
      !-> dimensions names
      !-> f(t,x,y,z)
-     real(rk),allocatable :: f(:,:,:,:)
+     real(rk),allocatable :: f(:,:,:)
      !-> field name
-     character(len=512) :: name="noname"
+     character(len=20) :: name="noname"
   end type field
 
 
@@ -123,9 +123,9 @@ contains
     integer(ik),intent(in) :: n1,n2,n3
     character(len=*),optional,intent(in) :: n1n,n2n,n3n
 
-    if (present(n1n)) x%nxn=n1n
-    if (present(n2n)) x%nyn=n2n
-    if (present(n3n)) x%nzn=n3n
+    !if (present(n1n)) x%nxn=n1n
+    !if (present(n2n)) x%nyn=n2n
+    !if (present(n3n)) x%nzn=n3n
     x%name=name
     call field_allocate(x,n1,n2,n3)
     x%f=0._rk

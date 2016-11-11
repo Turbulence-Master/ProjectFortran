@@ -3,3 +3,5 @@ includes/
 libs/
 doc/html
 doc/latex
+*.o
+*.mod
