@@ -12,8 +12,18 @@ Set of mathematical tools to help master students projects, homeworks developped
 pFUnit http://pfunit.sourceforge.net/
 
 # Installation
-1.) Inside the folder src type 'make' <br />
-2.) Execute the math binary file in the newly created folder /bin 
+You need the following packages: git, gfortran and liblapack-dev
+
+_sudo apt-get install git gfortran liblapack-dev_
+
+To test the lapack modules, you can go to the src folder and type:
+
+_gfortran -c tools/precision.f90_
+
+_gfortran -llapack precision.o lapackTesting.f90 -o lapackTesting_
+
+_./lapackTesting_
+
 
 # Documentation
 
