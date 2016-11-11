@@ -37,46 +37,33 @@ module class_field
 
 contains
 
-! =======================================================================
-! =======================================================================
-! field : operators methods
-! =======================================================================
-! =======================================================================
-
+!> Assign a field type in another field type variable
+!! method
+!! @param x1 target field to be assigned
+!! @param x2 field to assign
   subroutine field_assign(x1,x2)
-! -----------------------------------------------------------------------
-! field : assign a field type in another field type variable
-! -----------------------------------------------------------------------
-! Matthieu Marquillie
-! 10/2012
-!
     implicit none
     type(field),intent(in) :: x2
     type(field),intent(inout) :: x1
     x1%f=x2%f
   end subroutine field_assign
 
+!> Assign a scalar in a field type variable
+!! method
+!! @param x1 target field to be assigned
+!! @param x2 scalar to assign
   subroutine field_assign_scalar(x1,x2)
-! -----------------------------------------------------------------------
-! field : assign a scalar in a field type variable
-! -----------------------------------------------------------------------
-! Matthieu Marquillie
-! 10/2012
-!
     implicit none
     real(rk),intent(in) :: x2
-!    type(field),intent(out) :: x1
     type(field),intent(inout) :: x1
     x1%f=x2
   end subroutine field_assign_scalar
 
+!> Add two field type variables
+!! method
+!! @param x1 first field
+!! @param x2 second field
   function field_add(x1,x2)
-! -----------------------------------------------------------------------
-! field : add two field type variables
-! -----------------------------------------------------------------------
-! Matthieu Marquillie
-! 10/2012
-!
     implicit none
     type(field),intent(in) :: x1,x2
     type(field) :: field_add
@@ -86,20 +73,17 @@ contains
     field_add%f=x1%f+x2%f
   end function field_add
 
+!> Add a scalar and afield type variables
+!! method
+!! @param x1 first field
+!! @param x2 scalar
   function field_add_scal1(x1,x2)
-! -----------------------------------------------------------------------
-! field : add a scalar and a field type variables
-! -----------------------------------------------------------------------
-! Matthieu Marquillie
-! 10/2012
-!
     implicit none
     type(field),intent(in) :: x1
     real(rk),intent(in) :: x2
     type(field) :: field_add_scal1
     character(len=512) :: name
     Character(len=15) :: num
-!    write(num,'(f0.2)')x2
     name=trim(x1%name) !//"+"//num
     call field_init(field_add_scal1,name,x1%nx,x1%ny,x1%nz)
     field_add_scal1%f=x1%f+x2
@@ -114,8 +98,6 @@ contains
 ! -----------------------------------------------------------------------
 ! field : initialize field type variable
 ! -----------------------------------------------------------------------
-! Matthieu Marquillie
-! 04/2011
 !
     implicit none
     type(field),intent(inout) :: x 
@@ -135,8 +117,6 @@ contains
 ! -----------------------------------------------------------------------
 ! field : (re)allocation field type array
 ! -----------------------------------------------------------------------
-! Matthieu Marquillie
-! 04/2011
 !
     implicit none
     type(field),intent(inout) :: x 
