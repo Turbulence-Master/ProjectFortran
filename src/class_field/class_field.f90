@@ -15,6 +15,7 @@ module class_field
 ! 07 10 2016 - Initial Version
 ! TODO_dd_mmm_yyyy - TODO_describe_appropriate_changes - TODO_name
 !------------------------------------------------------------------------------
+  use class_io
   use precision
   implicit none
 
