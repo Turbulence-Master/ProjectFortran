@@ -12,37 +12,39 @@ Set of mathematical tools to help master students projects, homeworks developped
 pFUnit http://pfunit.sourceforge.net/
 
 # Installation
-1.) Inside the folder src type 'make' 
-2.) Execute the math binary file in the newly created folder /bin 
+You need the following packages: git, gfortran and liblapack-dev
+
+_sudo apt-get install git gfortran liblapack-dev_
+
+To test the lapack modules, you can go to the src folder and type:
+
+_gfortran -c tools/precision.f90_
+
+_gfortran -llapack precision.o lapackTesting.f90 -o lapackTesting_
+
+_./lapackTesting_
+
 
 # Documentation
 
 # License
 
 # Colaborating with the code
-! get the copy of the project <br />
-git clone https://github.com/Turbulence-Master/ProjectFortran.git <br /> 
 
-! update the project with the most recent changes <br /> 
-git pull <br />
+## Cheat Sheet
+|Command      |Function                                              |
+|-------------|------------------------------------------------------|
+|git clone https://github.com/Turbulence-Master/ProjectFortran.git |Get the copy of the project|
+|git pull |Update the project with the most recent changes|
+|git checkout -b NAME_OF_BRANCH |Change to your own branch (do not make changes directly to master)|
+|git add FILE_HERE |Add files to be inserted or changed in the project|
+|git commit -m "message here" |Commit your changes to your LOCAL repository|
+|git push -u origin NAME_OF_BRANCH |Send your LOCAL changes to the REMOTE (upstream) repository|
+|git push |If commiting directly to master branch|
+|git checkout master |Change to master branch|
+|git merge NAME_OF_BRANCH |Merge changes from your branch to master branch|
+|git branch -d BRANCH_NAME |Delete your branch|
+|git push origin --delete BRANCH_NAME  |Send the information of the branch deletion upstream|
+|git clean -d -x -f |Clears the files created by you, start over, discard changes (BE CAREFUL)|
 
-! change to your own branch (do not make changes directly to master) <br /> 
-git checkout -b NAME_OF_BRANCH <br />
 
-! add files to be inserted or changed in the project <br />
-git add FILE_HERE <br />
-
-! commit your changes to your LOCAL repository <br />
-git commit -m "message here" <br />
-
-! send your LOCAL changes to the REMOTE (upstream) repository <br />
-git push -u origin NAME_OF_BRANCH<br />
-or
-git push (if commiting directly to master branch) <br />
-
-! merge changes from your branch to master branch <br />
-git checkout master <br />
-git merge NAME_OF_BRANCH <br />
-
-! clears the files created by you, start over, discard changes (be careful) <br /> 
-git clean -d -x -f <br />

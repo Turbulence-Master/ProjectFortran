@@ -1,19 +1,24 @@
 # makefile: makes mathematical tools program
 
 #INC_PATH=../includes
-LIB_PATH=../libs
+LIB_PATH=../lib
 BIN_PATH=../bin
 
-FLAGS = -Wall -fcheck=bounds
-OBJECTS = tools.o
+FLAGS = -llapack -Wall -fcheck=bounds
+OBJECTS = class_field.o precision.o
 
-$(BIN_PATH)/math: $(OBJECTS)
+$(BIN_PATH)/generalTest: $(OBJECTS)
 	mkdir -p $(BIN_PATH)
-	gfortran $(OBJECTS) main.f90 -o $(BIN_PATH)/math $(FLAGS)
+	gfortran $(OBJECTS) generalTest.f90 -o $(BIN_PATH)/generalTest $(FLAGS)
 
-tools.o: tools.f90
-	gfortran -c tools.f90
+class_field.o: precision.o
+	gfortran -c class_field/class_field.f90
+
+precision.o: tools/precision.f90
+	gfortran -c tools/precision.f90
 
 clean:
-	rm -f $(OBJECTS) tools.mod
+	rm -f *.o *.mod
 	rm -Rf $(BIN_PATH)
+#	rm -Rf $(LIB_PATH)
+#	rm -Rf $(INC_PATH)
