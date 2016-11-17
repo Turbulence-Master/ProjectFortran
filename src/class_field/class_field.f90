@@ -15,6 +15,7 @@ module class_field
 ! 07 10 2016 - Initial Version
 ! TODO_dd_mmm_yyyy - TODO_describe_appropriate_changes - TODO_name
 !------------------------------------------------------------------------------
+  use class_io
   use precision
   implicit none
 
@@ -132,4 +133,115 @@ contains
        x%nx=n1 ; x%ny=n2 ; x%nz=n3
     endif
   end subroutine field_allocate
+  
+  !---------------------------------------------------------------------------  
+  !> @author 
+  !> Routine Author Matthieu Marquillie
+  !
+  ! DESCRIPTION: 
+  !> Create/Open and Write/Add field variable in output file
+  !> @brief
+  !> Create/Open and Write/Add field variable in output file
+  !
+  ! REVISION HISTORY:
+  ! 01/07/2011 - Initial Version by Matthieu Marquillie
+  ! 13/11/2016 - Updated Version by Ilkay Solak
+  !
+  !> @param[in] file_name              - name of the file
+  !> @param[inout] x                   - variable to read
+  !> @param[in] istart(ndim),optional  - start points, per process if MPI
+  !> @param[in] icount(ndim),optional  - end points, per process if MPI
+  !---------------------------------------------------------------------------  
+  subroutine write_field(file_name,x,istart,icount)
+    use class_io
+    implicit none
+    
+    character(len=*),intent(in) :: file_name
+    type(field),intent(in) :: x
+    integer(ik),optional,intent(in) :: istart(3),icount(3)
+
+    integer(ik) :: iistart(3),irang
+
+    !-> write 3d variable
+    if (present(istart)) then
+      if (present(icount)) then
+        call write_var3d(file_name//".nc",[character(len=512) :: x%nxn,x%nyn,x%nzn],&
+                         (/x%nx,x%ny,x%nz/),x%name,x%f,istart,icount)
+      else
+        call write_var3d(file_name//".nc",[character(len=512) :: x%nxn,x%nyn,x%nzn],&
+                       (/x%nx,x%ny,x%nz/),x%name,x%f,istart,(/x%nx,x%ny,x%nz/))
+      endif
+    else
+      if (present(icount)) then
+        call write_var3d(file_name//".nc",[character(len=512) :: x%nxn,x%nyn,x%nzn],&
+                         (/x%nx,x%ny,x%nz/),x%name,x%f,(/1,1,1/),icount)
+      else 
+        call write_var3d(file_name//".nc",[character(len=512) :: x%nxn,x%nyn,x%nzn],&
+                         (/x%nx,x%ny,x%nz/),x%name,x%f,(/1,1,1/),(/x%nx,x%ny,x%nz/))
+      endif
+    endif
+
+  end subroutine write_field
+  
+  !---------------------------------------------------------------------------  
+  !> @author 
+  !> Routine Author Matthieu Marquillie
+  !
+  ! DESCRIPTION: 
+  !> Read field variable from input file
+  !> @brief
+  !> Read field variable from input file
+  !
+  ! REVISION HISTORY:
+  ! 01/07/2011 - Initial Version by Matthieu Marquillie
+  ! 13/11/2016 - Updated Version by Ilkay Solak
+  !
+  !> @param[in] file_name       - name of the file
+  !> @param[inout] x            - variable to read
+  !> @param[in] var_name        - name of the variable
+  !> @param[in] istart(ndim)    - start points, per process if MPI
+  !> @param[in] icount(ndim)    - end points, per process if MPI
+  !---------------------------------------------------------------------------  
+  subroutine read_field(file_name,x,var_name,istart,icount)
+    use class_io
+    implicit none
+    
+    character(len=*),intent(in) :: file_name,var_name
+    type(field),intent(inout) :: x
+    integer(ik),optional,intent(in) :: istart(3),icount(3)
+    
+    integer(ik) :: dim_len(3)
+    character(len=512) :: dim_name(3)
+
+    integer(ik) :: iistart(3),irang
+
+    !-> get field informations in input file 
+    call get_var3d_info(file_name(1:len_trim(file_name))//".nc",var_name,dim_name,dim_len)
+
+    !-> initialize field
+    if (present(icount)) then
+      call field_init(x,var_name,icount(1),icount(2),icount(3),&
+                      n1n=dim_name(1),n2n=dim_name(2),n3n=dim_name(3))
+    else
+      call field_init(x,var_name,dim_len(1),dim_len(2),dim_len(3),&
+                      n1n=dim_name(1),n2n=dim_name(2),n3n=dim_name(3))
+    endif
+
+    !-> read 3d variable
+    if (present(istart)) then
+	    if (present(icount)) then
+		    call read_var3d(file_name(1:len_trim(file_name))//".nc",x%name,x%f,istart,icount)
+	    else
+		    call read_var3d(file_name(1:len_trim(file_name))//".nc",x%name,x%f,istart,(/x%nx,x%ny,x%nz/))
+	    endif
+    else
+	    if (present(icount)) then
+		    call read_var3d(file_name(1:len_trim(file_name))//".nc",x%name,x%f,(/1,1,1/),icount)
+	    else
+		    call read_var3d(file_name(1:len_trim(file_name))//".nc",x%name,x%f,(/1,1,1/),(/x%nx,x%ny,x%nz/))
+	    endif
+    endif
+
+  end subroutine read_field  
+  
 end module class_field
