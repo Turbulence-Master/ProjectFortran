@@ -2,10 +2,11 @@ PROJECT(Fortran)
 enable_language (Fortran) 
  
 # Check version of cmake 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 2.8)
 
 SET(CMAKE_VERBOSE_MAKEFILE ON) 
 SET(CMAKE_COLOR_MAKEFILE ON) 
+
  
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin) 
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib) 
@@ -39,12 +40,15 @@ ADD_LIBRARY(${TOOLS} STATIC src/tools.f90)
 SET(PRECISION precision)
 ADD_LIBRARY(${PRECISION} STATIC src/tools/precision.f90)
 
+SET(CLASSLINEARSOLVER classlinearsolver)
+ADD_LIBRARY(${CLASSLINEARSOLVER} STATIC src/class_linear_solver/class_linear_solver.f90)
+
 #SET (CLASS_FIELD class_field)
 ADD_LIBRARY(${CLASS_FIELD} STATIC src/class_field/class_field.f90)
 target_link_libraries(${CLASS_FIELD} ${CLASS_IO} ${PRECISION})
 
 #SET (CLASS_IO class_io)
-ADD_LIBRARY(${CLASS_IO} STATIC src/class_io/class_io.f90)
+#ADD_LIBRARY(${CLASS_IO} STATIC src/class_io/class_io.f90)
 
 # Executables
 
@@ -52,6 +56,11 @@ ADD_LIBRARY(${CLASS_IO} STATIC src/class_io/class_io.f90)
 SET(MAIN main)
 ADD_EXECUTABLE( ${MAIN} src/main.f90)
 target_link_libraries(${MAIN} ${TOOLS})
+
+# funny program
+SET(TESTLSSOLVER testlssolver)
+ADD_EXECUTABLE( ${TESTLSSOLVER} src/class_linear_solver/testlssolver.f90)
+target_link_libraries(${TESTLSSOLVER} ${CLASSLINEARSOLVER})
 
 #SET(GENERALTEST generalTest)
 #ADD_EXECUTABLE( ${GENERALTEST} src/generalTest.f90)
