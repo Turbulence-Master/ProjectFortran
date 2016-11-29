@@ -1,44 +1,7 @@
-program numerical_integration
+module numerical_integration
     USE precision    
     IMPLICIT NONE
-    
-    INTEGER(ik) :: i,j,N
-    REAL(rk) :: Arear, Areat, Aream, Areas, a, b, h
-    
-    !!OPEN(UNIT=1,FILE="Num_Int.txt",ACTION="WRITE")
-    print*,"Enter the value of N:"
-    read*, N
-    print*,"Enter the value for upper bound:"
-    read*, b
-    print*,"Enter the value for lower bound:"
-    read*, a
-    !!do i = 1,5 
-      h = (b-a)/N
-      print*, "N =",N
-      !!WRITE(1,*) "N =",N,"                |"
-      Arear = 0
-      Areat = 0
-      Aream = 0
-      Areas = 0
-      do j = 0, N
-        CALL rectangular(N,j,h,a,Arear)
-        !!WRITE(1,*) "Rectangular = ", Area,"|"
-        CALL trapezoidal(N,j,h,a,Areat)
-        !!WRITE(1,*) "Trapezoidal = ", Area,"|"
-        CALL mid_point(N,j,h,a,Aream)
-        !!WRITE(1,*) "Mid Point   = ", Area,"|"
-        CALL simpson(N,j,h,a,Areas)
-        !!WRITE(1,*) "Simpson     = ", Area,"|"
-      end do
-      print*, "Area total  = ",Arear
-      print*, "Area total  = ",Areat
-      print*, "Area total  = ",Aream
-      print*, "Area total  = ",Areas
-      print*, "--------------------------"
-      !!N = N*2
-      !!WRITE(1,*) "---------------------------"
-    !!end do
-    !!CLOSE(UNIT=1)
+
 CONTAINS
     SUBROUTINE rectangular(N,j,h,a,Arear)
         IMPLICIT NONE
@@ -107,4 +70,4 @@ CONTAINS
         !print*, "Area total = ",Areas
         !print*,"-------------------------------------------"
     END SUBROUTINE simpson
-end program numerical_integration
+end module numerical_integration

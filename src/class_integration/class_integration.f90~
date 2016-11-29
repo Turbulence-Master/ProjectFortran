@@ -58,7 +58,7 @@ CONTAINS
     SUBROUTINE trapezoidal(N,j,h,a,Areat)
         IMPLICIT NONE
         INTEGER(ik),INTENT(IN) :: N,j
-        REAL(rk),INTENT(INOUT) :: Areat,h,a
+        REAL(rk),INTENT(INOUT) :: Arear,h,a
         REAL(rk),DIMENSION(0:N) :: x,r
         x(j) = a+j*h
         r(j) = 3+2*x(j)+5*x(j)*x(j)
