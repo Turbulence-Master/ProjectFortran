@@ -40,12 +40,13 @@ ADD_LIBRARY(${TOOLS} STATIC src/tools.f90)
 SET(PRECISION precision)
 ADD_LIBRARY(${PRECISION} STATIC src/tools/precision.f90)
 
-SET(CLASSLINEARSOLVER classlinearsolver)
-ADD_LIBRARY(${CLASSLINEARSOLVER} STATIC src/class_linear_solver/class_linear_solver.f90)
+#SET(CLASSLINEARSOLVER classlinearsolver)
+#ADD_LIBRARY(${CLASSLINEARSOLVER} STATIC src/class_linear_solver/class_linear_solver.f90)
+#target_link_libraries(${PRECISION})
 
 #SET (CLASS_FIELD class_field)
-ADD_LIBRARY(${CLASS_FIELD} STATIC src/class_field/class_field.f90)
-target_link_libraries(${CLASS_FIELD} ${CLASS_IO} ${PRECISION})
+#ADD_LIBRARY(${CLASS_FIELD} STATIC src/class_field/class_field.f90)
+#target_link_libraries(${CLASS_FIELD} ${CLASS_IO} ${PRECISION})
 
 #SET (CLASS_IO class_io)
 #ADD_LIBRARY(${CLASS_IO} STATIC src/class_io/class_io.f90)
@@ -58,9 +59,14 @@ ADD_EXECUTABLE( ${MAIN} src/main.f90)
 target_link_libraries(${MAIN} ${TOOLS})
 
 # funny program
-SET(TESTLSSOLVER testlssolver)
-ADD_EXECUTABLE( ${TESTLSSOLVER} src/class_linear_solver/testlssolver.f90)
-target_link_libraries(${TESTLSSOLVER} ${CLASSLINEARSOLVER})
+#SET(TESTLSSOLVER testlssolver)
+#ADD_EXECUTABLE( ${TESTLSSOLVER} src/class_linear_solver/testlssolver.f90)
+#target_link_libraries(${TESTLSSOLVER} ${CLASSLINEARSOLVER})
+
+# Alex program
+SET(INTEGRATION integration)
+ADD_EXECUTABLE( ${INTEGRATION} src/class_integration/class_integration.f90)
+target_link_libraries(${INTEGRATION} ${PRECISION})
 
 #SET(GENERALTEST generalTest)
 #ADD_EXECUTABLE( ${GENERALTEST} src/generalTest.f90)
