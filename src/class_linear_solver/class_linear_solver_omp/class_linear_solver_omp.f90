@@ -10,6 +10,7 @@
 
 module linear_solver
   use precision
+	use omp_lib
 
   implicit none
 
@@ -48,13 +49,15 @@ contains
 		real(rk), intent(in) :: A(n,n), b(n)
 		real(rk), intent(out) :: x(n)
 		
-		integer(ik)::i,j
+		integer(ik)::i,j,m=0
+		integer(ik)::s,r
 		real(rk)::coeff
 		coeff=0.0000000000000000
 	
 		
 		if (A(n,n)==0) stop "null element on the diagonal"
-		x(n)=b(n)/A(n,n)		
+		x(n)=b(n)/A(n,n)	
+!$OMP PARALLEL DO	
 		do i=n-1,1,-1
 			if (A(i,i)==0) stop "null element on the diagonal" !if element on the diagonal is 0 -> error
 			do j=i+1,n,1
@@ -64,10 +67,21 @@ contains
 				!print*, "i:", i, "j:" , j , "coeff", coeff	
 			end do
 			x(i)=(b(i)-coeff)/A(i,i)	
-			!print*, "i",i,"x(i):", x(i)
+			print*, "i",i,"x(i):", x(i)
 			coeff=0.0000000000000000
-		end do
+			
+		r=OMP_GET_NUM_THREADS()
+		s=OMP_GET_THREAD_NUM()
+		print*, "thread num", s
+			print*, "num thread", r
 		
+			!m=omp_get_num_threads()
+			print*,m	
+		end do
+
+!$OMP END PARALLEL DO	
+print*,"inside bksub"
+
 	end subroutine bksub
 
 	!---------------------------------------------------------------------------  
@@ -96,7 +110,7 @@ contains
 			stop "null element on the diagonal"
 		end if 
 		x(1)=b(1)/A(1,1)		
-			
+!$OMP PARALLEL DO	
 		do i=2,n,1
 			coeff=0.0000000000000000
 			if (A(i,i)==0) then 
@@ -108,6 +122,8 @@ contains
 			end do	
 			x(i)=(b(i)-coeff)/A(i,i)	
 		end do
+!$OMP END PARALLEL DO	
+print*,"inside fwsub"
 	end subroutine fwsub
 
 
@@ -156,7 +172,7 @@ contains
 
 		x=b
 
-
+print*,"inside lu solver"
 	end subroutine lu_solver
 
 !! thomas algorithm in case of matrix 
@@ -188,12 +204,14 @@ contains
 		!! alpha array of n elements, betha n-1 elements, theta n-1 elements
 		
 		alpha(1)=A(1,1)
+!$OMP PARALLEL DO			
 		do i=2,n
     	betha(i-1)=A(i,i-1)/alpha(i-1)
 			theta(i-1)=A(i-1,i)
 			alpha(i)=A(i,i)-betha(i-1)*theta(i-1)
 		end do
-
+!$OMP END PARALLEL DO	
+print*,"inside thomas algorithm "
 	end subroutine thomas_algorithm
 
 
@@ -224,15 +242,20 @@ contains
 		call thomas_algorithm(n,A,alpha,betha,theta)
 		
 		y(1)=b(1)		
+		!$OMP PARALLEL DO			
 		do i=2,n
 			y(i)=b(i)-betha(i-1)*y(i-1)		
 		end do
+		!$OMP END PARALLEL DO	
 
 		x(n)=y(n)/alpha(n)		
+		
+		!$OMP PARALLEL DO	
 		do i=n-1,1,-1
 			x(i)=(y(i)-theta(i)*x(i+1))/alpha(i)		
 		end do
-
+		!$OMP END PARALLEL DO	
+print*,"inside thomas solver"
 	end subroutine thomas_solver
 
 
@@ -309,7 +332,7 @@ contains
 		do i=n-1,1,-1
 			x(i)=(y(i)-(theta(i)*x(i+1)))/alpha(i)		
 		end do
-
+print*,"inside thomas array"
 	end subroutine thomas
    
 end module linear_solver

@@ -5,14 +5,13 @@ program testlssolver
 
 	real(8),allocatable :: matrix(:,:), rside(:),sol(:)
 	integer, parameter::dimens=4 !3
-	integer:: select_param    !,i
+	integer:: select_param !i 
 	real(8)::diag(1:dimens), lowerdiag(1:dimens-1), upperdiag(1:dimens-1)
-	!! here we can change the paramether in orther to use a different methods
-	!select_param=4
-
 	
-				!! non funziona   ! funziona 
-	do select_param=1,4
+
+	!!!!!! gfortran -fopenmp omp_par_do omp_par_do.f90 -o run
+				
+	do select_param=1,4 !i 
 		!attention: fortran read the matric by column-majot order
 		allocate(matrix(1:dimens,1:dimens),rside(1:dimens),sol(1:dimens))
 		if (select_param .eq. 1) then 
@@ -32,12 +31,12 @@ program testlssolver
 		end if 
 		
 		call solver(matrix,rside,sol,dimens,select_param)
-			print*,"i= ",i	
+			print*,"select_param = ",select_param	
 			print*, "solution:" ,sol
 		deallocate(matrix,rside,sol)
 	end do
 	
-print*,"entra in thomas vect"
+!print*,"entra in thomas vect"
 	diag=4
 	lowerdiag=-1
 	upperdiag=-1
