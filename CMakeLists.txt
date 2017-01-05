@@ -64,9 +64,9 @@ ADD_EXECUTABLE( ${TESTLSSOLVER} src/class_linear_solver/testlssolver.f90)
 target_link_libraries(${TESTLSSOLVER} ${CLASSLINEARSOLVER} ${PRECISION})
 
 # Alex program
-#SET(INTEGRATION integration)
-#ADD_EXECUTABLE( ${INTEGRATION} src/class_integration/class_integration.f90)
-#target_link_libraries(${INTEGRATION} ${PRECISION})
+SET(INTEGRATION integration)
+ADD_EXECUTABLE( ${INTEGRATION} src/class_integration/class_integration.f90)
+target_link_libraries(${INTEGRATION} ${PRECISION})
 
 #SET(GENERALTEST generalTest)
 #ADD_EXECUTABLE( ${GENERALTEST} src/generalTest.f90)
