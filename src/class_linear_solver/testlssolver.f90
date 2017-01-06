@@ -32,7 +32,7 @@ program testlssolver
 		end if 
 		
 		call solver(matrix,rside,sol,dimens,select_param)
-			print*,"i= ",i	
+			!print*,"i= ",i	
 			print*, "solution:" ,sol
 		deallocate(matrix,rside,sol)
 	end do
