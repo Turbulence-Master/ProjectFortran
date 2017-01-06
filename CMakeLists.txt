@@ -65,7 +65,7 @@ target_link_libraries(${TESTLSSOLVER} ${CLASSLINEARSOLVER} ${PRECISION})
 
 # Alex program
 SET(INTEGRATION integration)
-ADD_EXECUTABLE( ${INTEGRATION} src/class_integration/class_integration.f90)
+ADD_EXECUTABLE( ${INTEGRATION} src/class_integration/class_integration_test.f90)
 target_link_libraries(${INTEGRATION} ${PRECISION})
 
 #SET(GENERALTEST generalTest)
