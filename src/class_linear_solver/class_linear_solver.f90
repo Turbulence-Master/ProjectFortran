@@ -1,8 +1,8 @@
 !> Module Fannie on linear solver
 !
 ! DESCRIPTION: 
-!> This module has the objective to solve linear sistem using Lu decomposition and to compute the thomas's algorithm for tri-diagonal matrix,
-! for the moment it just work with square matrix
+!> This module contains all the subroutines for Lu decomposition, backward and forward substitution, thomas's algorithm 
+!> for tri-diagonal matrix, just work with square matrix
 !
 ! REVISION HISTORY:
 ! 11 11 2016 - Initial Version
@@ -50,22 +50,19 @@ contains
 		
 		integer(ik)::i,j
 		real(rk)::coeff
-		coeff=0.0000000000000000
+		coeff=0.0d0
 	
 		
-		if (A(n,n)==0) stop "null element on the diagonal"
-		x(n)=b(n)/A(n,n)		
+		if (A(n,n)==0) stop "null element on the diagonal"							!if element on the diagonal is 0 -> error
+		x(n)=b(n)/A(n,n)																								!starting from the last element
 		do i=n-1,1,-1
-			if (A(i,i)==0) stop "null element on the diagonal" !if element on the diagonal is 0 -> error
+			if (A(i,i)==0) stop "null element on the diagonal" 						!if element on the diagonal is 0 -> error
 			do j=i+1,n,1
-				!print*,"coeff prima",coeff
 				coeff=coeff+(A(i,j)*x(j))
-	
-				!print*, "i:", i, "j:" , j , "coeff", coeff	
 			end do
 			x(i)=(b(i)-coeff)/A(i,i)	
-			!print*, "i",i,"x(i):", x(i)
-			coeff=0.0000000000000000
+			
+			coeff=0.d0
 		end do
 		
 	end subroutine bksub
@@ -89,18 +86,19 @@ contains
 		integer(ik),intent(in)::n,param
 		real(rk), intent(in) :: A(n,n), b(n)
 		real(rk), intent(out) :: x(n)
-		
 		integer(ik)::i,j	
 		real(rk)::coeff	
+
     if (A(1,1)==0) then 
-			stop "null element on the diagonal"
+			stop "null element on the diagonal"			!if element on the diagonal is 0 -> error
 		end if 
-		x(1)=b(1)/A(1,1)		
+		
+		x(1)=b(1)/A(1,1)													!starting from the first element
 			
 		do i=2,n,1
-			coeff=0.0000000000000000
+			coeff=0.0d0 
 			if (A(i,i)==0) then 
-				stop "null element on the diagonal" !if element on the diagonal is 0 -> error
+				stop "null element on the diagonal" 	!if element on the diagonal is 0 -> error
 			end if
 
 			do j=1,i-1,1
@@ -143,10 +141,8 @@ contains
 
 
 		!using the subroutine from lapack for the LU decomposition of the matrix A
-		! --> info of the function to add 
-
   
-		nrhs=1 !coloumn of b
+		nrhs=1 								!coloumn of b
 
 
 		call dgetrf( n, n, a, n, pivots_array, info )
@@ -159,15 +155,13 @@ contains
 
 	end subroutine lu_solver
 
-!! thomas algorithm in case of matrix 
-
   !---------------------------------------------------------------------------  
   !> @author 
-  !> thomas_algorithm
+  !> thomas_algorithm matrix input
   !
   ! DESCRIPTION: 
   !> select from A the vector alpha,betha e theta. 
-	!>It works for tridiagonal matrix
+	!> It works for tridiagonal matrix
 	!
   ! REVISION HISTORY:
   ! TODO_dd_mmm_yyyy - TODO_describe_appropriate_changes - TODO_name
@@ -183,11 +177,10 @@ contains
 		
 		integer(ik),intent(in)::n
 		real(rk), intent(in) :: A(n,n)
-		real(rk), intent(out) :: alpha(n),betha(n-1),theta(n-1)
+		real(rk), intent(out) :: alpha(n),betha(n-1),theta(n-1)			!! alpha array of n elements, betha n-1 elements, theta n-1 elements
 		integer(rk)::i 
-		!! alpha array of n elements, betha n-1 elements, theta n-1 elements
-		
-		alpha(1)=A(1,1)
+					
+		alpha(1)=A(1,1)																							! creation of the arrays alpha, betha, theta
 		do i=2,n
     	betha(i-1)=A(i,i-1)/alpha(i-1)
 			theta(i-1)=A(i-1,i)
@@ -221,9 +214,9 @@ contains
 		integer(rk)::i 
 		!! alpha array of n elements, betha n-1 elements, theta n-1 elements
 		
-		call thomas_algorithm(n,A,alpha,betha,theta)
+		call thomas_algorithm(n,A,alpha,betha,theta)              	! built of the arrays
 		
-		y(1)=b(1)		
+		y(1)=b(1)																										! starting to solve the system
 		do i=2,n
 			y(i)=b(i)-betha(i-1)*y(i-1)		
 		end do
@@ -236,8 +229,14 @@ contains
 	end subroutine thomas_solver
 
 
+	! subroutine for the selection of the call using param 
+	! param=1 -> bksub
+	! param=2 -> fwsub
+	! param=3 -> lu_solver
+	! param=4 -> thomas_solver
 
-	subroutine solver_matrix(A,b,x,n,param)
+
+	subroutine solver_matrix(A,b,x,n,param) 														
 		implicit none 
 		integer(ik),intent(in)::n,param
 		real(rk), intent(inout) :: A(n,n)
@@ -259,13 +258,9 @@ contains
   end subroutine solver_matrix
 
 
-
-!! thomas algorithm with vectors (best choice)
-
-
   !---------------------------------------------------------------------------  
   !> @author 
-  !> thomas
+  !> thomas array input
   !
   ! DESCRIPTION: 
   !> Using the vector alpha,betha,theta from thomas_algorithm solve the 
@@ -295,17 +290,12 @@ contains
 			alpha(i)=alpha(i)-betha(i-1)*theta(i-1)
 		end do
 
-
-
-!print*,"fine dich variabili"
-	!	print*,"definizione di y "		
-		y(1)=b(1)		
+		y(1)=b(1)																			!first step
 		do i=2,n
 			y(i)=b(i)-betha(i-1)*y(i-1)		
 		end do
-!print*,"y thomas: ", y
-		!print*,"definizione di x "
-		x(n)=y(n)/alpha(n)		
+
+		x(n)=y(n)/alpha(n)														!second step  
 		do i=n-1,1,-1
 			x(i)=(y(i)-(theta(i)*x(i+1)))/alpha(i)		
 		end do
