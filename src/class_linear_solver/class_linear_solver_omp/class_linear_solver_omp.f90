@@ -1,14 +1,14 @@
 !> Module Fannie on linear solver
 !
 ! DESCRIPTION: 
-!> This module has the objective to solve linear sistem using Lu decomposition and to compute the thomas's algorithm for tri-diagonal matrix,
-! for the moment it just work with square matrix
+!> This module contains all the subroutines for Lu decomposition, backward and forward substitution, thomas's algorithm 
+!> for tri-diagonal matrix with openmp , just work with square matrix
 !
 ! REVISION HISTORY:
 ! 11 11 2016 - Initial Version
 !------------------------------------------------------------------------------
 
-module linear_solver
+module linear_solver_omp
   use precision
 	use omp_lib
 
@@ -48,39 +48,30 @@ contains
 		integer(ik),intent(in)::n,param
 		real(rk), intent(in) :: A(n,n), b(n)
 		real(rk), intent(out) :: x(n)
-		
-		integer(ik)::i,j,m=0
-		integer(ik)::s,r
+		integer(ik)::i,j
 		real(rk)::coeff
-		coeff=0.0000000000000000
+		integer(ik)::s,r
+		coeff=0.0d0
 	
 		
-		if (A(n,n)==0) stop "null element on the diagonal"
-		x(n)=b(n)/A(n,n)	
-!$OMP PARALLEL DO	
+		if (A(n,n)==0) stop "null element on the diagonal"							!if element on the diagonal is 0 -> error
+		x(n)=b(n)/A(n,n)																								!starting from the last element		
+		!$OMP PARALLEL DO PRIVATE(COEFF,j)																							
 		do i=n-1,1,-1
-			if (A(i,i)==0) stop "null element on the diagonal" !if element on the diagonal is 0 -> error
+			coeff=0.d0
+			if (A(i,i)==0) stop "null element on the diagonal" 						!if element on the diagonal is 0 -> error
 			do j=i+1,n,1
-				!print*,"coeff prima",coeff
 				coeff=coeff+(A(i,j)*x(j))
-	
-				!print*, "i:", i, "j:" , j , "coeff", coeff	
 			end do
 			x(i)=(b(i)-coeff)/A(i,i)	
-			print*, "i",i,"x(i):", x(i)
-			coeff=0.0000000000000000
 			
-		r=OMP_GET_NUM_THREADS()
-		s=OMP_GET_THREAD_NUM()
-		print*, "thread num", s
+			
+			r=OMP_GET_NUM_THREADS()
+			s=OMP_GET_THREAD_NUM()
+			print*, "thread num", s
 			print*, "num thread", r
-		
-			!m=omp_get_num_threads()
-			print*,m	
 		end do
-
-!$OMP END PARALLEL DO	
-print*,"inside bksub"
+		!$OMP END PARALLEL DO	
 
 	end subroutine bksub
 
@@ -100,21 +91,23 @@ print*,"inside bksub"
 
 	subroutine fwsub(A,b,x,n,param)
 		implicit none 
+	
 		integer(ik),intent(in)::n,param
 		real(rk), intent(in) :: A(n,n), b(n)
 		real(rk), intent(out) :: x(n)
-		
 		integer(ik)::i,j	
 		real(rk)::coeff	
+
     if (A(1,1)==0) then 
-			stop "null element on the diagonal"
+			stop "null element on the diagonal"			!if element on the diagonal is 0 -> error
 		end if 
-		x(1)=b(1)/A(1,1)		
-!$OMP PARALLEL DO	
+		
+		x(1)=b(1)/A(1,1)													!starting from the first element
+		!$OMP PARALLEL DO	PRIVATE(coeff,j)
 		do i=2,n,1
-			coeff=0.0000000000000000
+			coeff=0.0d0 
 			if (A(i,i)==0) then 
-				stop "null element on the diagonal" !if element on the diagonal is 0 -> error
+				stop "null element on the diagonal" 	!if element on the diagonal is 0 -> error
 			end if
 
 			do j=1,i-1,1
@@ -122,8 +115,8 @@ print*,"inside bksub"
 			end do	
 			x(i)=(b(i)-coeff)/A(i,i)	
 		end do
-!$OMP END PARALLEL DO	
-print*,"inside fwsub"
+		!$OMP END PARALLEL DO	
+
 	end subroutine fwsub
 
 
@@ -159,10 +152,8 @@ print*,"inside fwsub"
 
 
 		!using the subroutine from lapack for the LU decomposition of the matrix A
-		! --> info of the function to add 
-
   
-		nrhs=1 !coloumn of b
+		nrhs=1 								!coloumn of b
 
 
 		call dgetrf( n, n, a, n, pivots_array, info )
@@ -172,18 +163,17 @@ print*,"inside fwsub"
 
 		x=b
 
-print*,"inside lu solver"
+
 	end subroutine lu_solver
 
-!! thomas algorithm in case of matrix 
 
   !---------------------------------------------------------------------------  
   !> @author 
-  !> thomas_algorithm
+  !> thomas_algorithm matrix input
   !
   ! DESCRIPTION: 
   !> select from A the vector alpha,betha e theta. 
-	!>It works for tridiagonal matrix
+	!> It works for tridiagonal matrix
 	!
   ! REVISION HISTORY:
   ! TODO_dd_mmm_yyyy - TODO_describe_appropriate_changes - TODO_name
@@ -199,21 +189,19 @@ print*,"inside lu solver"
 		
 		integer(ik),intent(in)::n
 		real(rk), intent(in) :: A(n,n)
-		real(rk), intent(out) :: alpha(n),betha(n-1),theta(n-1)
+		real(rk), intent(out) :: alpha(n),betha(n-1),theta(n-1)			!! alpha array of n elements, betha n-1 elements, theta n-1 elements
 		integer(rk)::i 
-		!! alpha array of n elements, betha n-1 elements, theta n-1 elements
-		
-		alpha(1)=A(1,1)
-!$OMP PARALLEL DO			
+					
+		alpha(1)=A(1,1)																							! creation of the arrays alpha, betha, theta
+		!$OMP PARALLEL DO			
 		do i=2,n
     	betha(i-1)=A(i,i-1)/alpha(i-1)
 			theta(i-1)=A(i-1,i)
 			alpha(i)=A(i,i)-betha(i-1)*theta(i-1)
 		end do
-!$OMP END PARALLEL DO	
-print*,"inside thomas algorithm "
-	end subroutine thomas_algorithm
+		!$OMP END PARALLEL DO	
 
+	end subroutine thomas_algorithm
 
   !---------------------------------------------------------------------------  
   !> @author 
@@ -228,10 +216,11 @@ print*,"inside thomas algorithm "
   !
   !> @param[in] inParam: A tridiagonal matrix, b right side array (known term), n size of A, thom paramether for the selection of    
   !> @param[out] outParam: x solution of the system  
-  !---------------------------------------------------------------------------  
+  !--------------------------------------------------------------------------- 
  
 	subroutine thomas_solver(A,b,x,n,param)
 		implicit none
+
 		integer(ik),intent(in)::n,param
 		real(rk), intent(in) :: A(n,n),b(n)
 		real(rk), intent(out) :: x(n)
@@ -239,26 +228,28 @@ print*,"inside thomas algorithm "
 		integer(rk)::i 
 		!! alpha array of n elements, betha n-1 elements, theta n-1 elements
 		
-		call thomas_algorithm(n,A,alpha,betha,theta)
+		call thomas_algorithm(n,A,alpha,betha,theta)              	! built of the arrays
 		
-		y(1)=b(1)		
+		y(1)=b(1)																										! starting to solve the system
 		!$OMP PARALLEL DO			
 		do i=2,n
 			y(i)=b(i)-betha(i-1)*y(i-1)		
 		end do
 		!$OMP END PARALLEL DO	
 
-		x(n)=y(n)/alpha(n)		
-		
-		!$OMP PARALLEL DO	
+		x(n)=y(n)/alpha(n)	
+		!$OMP PARALLEL DO		
 		do i=n-1,1,-1
 			x(i)=(y(i)-theta(i)*x(i+1))/alpha(i)		
 		end do
 		!$OMP END PARALLEL DO	
-print*,"inside thomas solver"
 	end subroutine thomas_solver
 
-
+	! subroutine for the selection of the call using param 
+	! param=1 -> bksub
+	! param=2 -> fwsub
+	! param=3 -> lu_solver
+	! param=4 -> thomas_solver
 
 	subroutine solver_matrix(A,b,x,n,param)
 		implicit none 
@@ -282,13 +273,9 @@ print*,"inside thomas solver"
   end subroutine solver_matrix
 
 
-
-!! thomas algorithm with vectors (best choice)
-
-
   !---------------------------------------------------------------------------  
   !> @author 
-  !> thomas
+  !> thomas array input
   !
   ! DESCRIPTION: 
   !> Using the vector alpha,betha,theta from thomas_algorithm solve the 
@@ -318,21 +305,16 @@ print*,"inside thomas solver"
 			alpha(i)=alpha(i)-betha(i-1)*theta(i-1)
 		end do
 
-
-
-!print*,"fine dich variabili"
-	!	print*,"definizione di y "		
-		y(1)=b(1)		
+		y(1)=b(1)																			!first step
 		do i=2,n
 			y(i)=b(i)-betha(i-1)*y(i-1)		
 		end do
-!print*,"y thomas: ", y
-		!print*,"definizione di x "
-		x(n)=y(n)/alpha(n)		
+
+		x(n)=y(n)/alpha(n)														!second step  
 		do i=n-1,1,-1
 			x(i)=(y(i)-(theta(i)*x(i+1)))/alpha(i)		
 		end do
-print*,"inside thomas array"
+
 	end subroutine thomas
    
-end module linear_solver
+end module linear_solver_omp
