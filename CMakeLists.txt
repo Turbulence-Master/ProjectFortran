@@ -4,7 +4,7 @@ enable_language (Fortran)
 # Check version of cmake 
 cmake_minimum_required(VERSION 2.8)
 
-SET(CMAKE_VERBOSE_MAKEFILE ON) 
+SET(CMAKE_VERBOSE_MAKEFILE OFF) 
 SET(CMAKE_COLOR_MAKEFILE ON) 
 
  
@@ -18,12 +18,13 @@ message( STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 # Compiler options
 message( STATUS "Fortran compiler: " ${CMAKE_Fortran_COMPILER} )
 #Compiler gfortran Flags
-set(CMAKE_Fortran_FLAGS "-fbounds-check -llapack ")
+#set(CMAKE_Fortran_FLAGS "-fbounds-check -llapack ")
 set(CMAKE_Fortran_FLAGS_RELEASE "-O3 -march=native -ffast-math -funroll-loops -std=legacy -fopenmp")
 set(CMAKE_Fortran_FLAGS_DEBUG "-O0 -Warray-bounds  -std=legacy -Wall -Wno-unused ")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ")
-set(DOUBLE "-r8")
+#set(DOUBLE "-r8")
 
+#set(LAPACKLIB "-L/opt/software/intel/composer_xe_2015.0.090/mkl/lib/intel64 -llapack -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -  lmkl_intel_lp64 -lmkl_core -lmkl_sequential")
 
 if (${CMAKE_BUILD_TYPE} MATCHES "Release")
   message( STATUS "Fortran compiler flags:" ${CMAKE_Fortran_FLAGS_RELEASE})
@@ -34,15 +35,19 @@ endif()
 
 # Libraries
 
-SET (TOOLS tools)
-ADD_LIBRARY(${TOOLS} STATIC src/tools.f90)
+#SET (TOOLS tools)
+#ADD_LIBRARY(${TOOLS} STATIC src/tools.f90)
 
 SET(PRECISION precision)
 ADD_LIBRARY(${PRECISION} STATIC src/tools/precision.f90)
 
-SET(CLASSLINEARSOLVER classlinearsolver)
-ADD_LIBRARY(${CLASSLINEARSOLVER} STATIC src/class_linear_solver/class_linear_solver.f90)
-target_link_libraries(${CLASSLINEARSOLVER} ${PRECISION})
+#SET(CLASSLINEARSOLVER classlinearsolver)
+#ADD_LIBRARY(${CLASSLINEARSOLVER} STATIC src/class_linear_solver/class_linear_solver.f90)
+#target_link_libraries(${CLASSLINEARSOLVER} ${PRECISION} ${LAPACKLIB})
+
+SET(MODINTEGRATION modintegration)
+ADD_LIBRARY(${MODINTEGRATION} STATIC src/class_integration/class_integration_module.f90)
+target_link_libraries(${MODINTEGRATION} ${PRECISION})
 
 #SET (CLASS_FIELD class_field)
 #ADD_LIBRARY(${CLASS_FIELD} STATIC src/class_field/class_field.f90)
@@ -54,19 +59,19 @@ target_link_libraries(${CLASSLINEARSOLVER} ${PRECISION})
 # Executables
 
 # main program
-SET(MAIN main)
-ADD_EXECUTABLE( ${MAIN} src/main.f90)
-target_link_libraries(${MAIN} ${TOOLS})
+#SET(MAIN main)
+#ADD_EXECUTABLE( ${MAIN} src/main.f90)
+#target_link_libraries(${MAIN} ${TOOLS})
 
 # Fannie program
-SET(TESTLSSOLVER testlssolver)
-ADD_EXECUTABLE( ${TESTLSSOLVER} src/class_linear_solver/testlssolver.f90)
-target_link_libraries(${TESTLSSOLVER} ${CLASSLINEARSOLVER} ${PRECISION})
+#SET(TESTLSSOLVER testlssolver)
+#ADD_EXECUTABLE( ${TESTLSSOLVER} src/class_linear_solver/testlssolver.f90)
+#target_link_libraries(${TESTLSSOLVER} ${CLASSLINEARSOLVER} ${PRECISION})
 
 # Alex program
 SET(INTEGRATION integration)
 ADD_EXECUTABLE( ${INTEGRATION} src/class_integration/class_integration_test.f90)
-target_link_libraries(${INTEGRATION} ${PRECISION})
+target_link_libraries(${INTEGRATION} ${MODINTEGRATION} ${PRECISION})
 
 #SET(GENERALTEST generalTest)
 #ADD_EXECUTABLE( ${GENERALTEST} src/generalTest.f90)

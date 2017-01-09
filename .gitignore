@@ -1,7 +1,8 @@
 bin/
 includes/
-libs/
+lib/
 doc/html
 doc/latex
 *.o
 *.mod
+build/
