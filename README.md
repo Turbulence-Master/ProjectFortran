@@ -27,6 +27,17 @@ _./lapackTesting_
 
 # Documentation
 
+You need the following packages: doxygen
+
+_sudo apt-get install doxygen_
+
+To generate the documentation, go to the doc folder and simply type "doxygen".
+A folder named html will be created and you can open the file index.html to see the documentation.
+
+The Doxygen documentation will read special syntax from your code, so if you want your code to appear, __you have to follow some rules__. Quick explanation: http://fortranwiki.org/fortran/show/Doxygen
+
+The module [class_io](src/class_io/class_io.f90) is the best example for doxygen Documentation, using the most important notations from doxygen.
+
 # License
 
 # Colaborating with the code
