@@ -255,7 +255,7 @@ contains
 			print*, "ERROR MESSAGE: select function paramether not valid" 
 		endif
 
-  end subroutine solver_matrix
+ 	 end subroutine solver_matrix
 
 
   !---------------------------------------------------------------------------  
@@ -273,33 +273,24 @@ contains
   !> @param[inout] inoutParam: alpha,betha,theta arrays of the tridiag matrix
   !> @param[out] outParam: x solution of the system  
   !---------------------------------------------------------------------------
+  	  subroutine thomas(x,a,b,c,d,n)
+	  implicit none
+		integer(ik),intent(in)::n
+		real(rk)::a(2:n), b(1:n), c(1:n-1)
+		real(rk):: d(1:n)
+		real(rk) :: x(1:n)
+		integer(ik)::i
 
-	subroutine thomas(alpha,betha,theta,b,x,n)
-		implicit none
-		integer,intent(in)::n
-		real(rk),intent(inout)::alpha(1:n), betha(1:n-1), theta(1:n-1)
-		real(rk),intent(in):: b(1:n)
-		real(rk), intent(out) :: x(1:n)
-		real(rk) :: y(1:n)
-		integer(ik) :: i
-		!! alpha array of n elements, betha n-1 elements, theta n-1 elements
+    		do i=2,n
+     			b(i) = b(i)-(a(i)/b(i-1))*c(i-1)
+      			d(i) = d(i)-(a(i)/b(i-1))*d(i-1)
+    		end do
+    		x(n) = d(n)/b(n)
+    		do i=n-1,1,-1
+      			x(i) = (d(i)-c(i)*x(i+1))/b(i)
+    		end do
 
-		
-		do i=2,n
-    	betha(i-1)=betha(i-1)/alpha(i-1)
-			alpha(i)=alpha(i)-betha(i-1)*theta(i-1)
-		end do
-
-		y(1)=b(1)																			!first step
-		do i=2,n
-			y(i)=b(i)-betha(i-1)*y(i-1)		
-		end do
-
-		x(n)=y(n)/alpha(n)														!second step  
-		do i=n-1,1,-1
-			x(i)=(y(i)-(theta(i)*x(i+1)))/alpha(i)		
-		end do
-
-	end subroutine thomas
+	  end subroutine thomas
+	
    
 end module linear_solver
