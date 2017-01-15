@@ -69,7 +69,7 @@ program testlssolver
 	allocate(rside(1:dimens),sol(1:dimens))
 	rside=(/2,4,6,13/)      !! exact sol: (1,2,3,4)
 
-	call solver(diag,lowerdiag,upperdiag,rside,sol,dimens)
+	call solver(sol,lowerdiag,diag,upperdiag,rside,dimens)
 	print*, "solution:" ,sol		
 	deallocate(rside,sol)
 end program testlssolver
