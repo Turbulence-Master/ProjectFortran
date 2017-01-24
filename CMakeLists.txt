@@ -50,6 +50,11 @@ SET(MODINTEGRATION modintegration)
 ADD_LIBRARY(${MODINTEGRATION} STATIC src/class_integration/class_integration_module.f90)
 target_link_libraries(${MODINTEGRATION} ${PRECISION})
 
+SET(New_CLASS_DERIV Derivativeclass)
+ADD_LIBRARY(${New_CLASS_DERIV} STATIC Mywork/New_class_deriv.f90)
+target_link_libraries(${New_CLASS_DERIV} ${PRECISION})
+#SET (CLASS_FIELD class_field)
+
 #SET (CLASS_FIELD class_field)
 #ADD_LIBRARY(${CLASS_FIELD} STATIC src/class_field/class_field.f90)
 #target_link_libraries(${CLASS_FIELD} ${CLASS_IO} ${PRECISION})
@@ -63,6 +68,11 @@ target_link_libraries(${MODINTEGRATION} ${PRECISION})
 #SET(MAIN main)
 #ADD_EXECUTABLE( ${MAIN} src/main.f90)
 #target_link_libraries(${MAIN} ${TOOLS})
+# AHMED Program
+SET(NEW_CLASS_DERIV derivative_class)
+ADD_EXECUTABLE( ${DERIVATIVE_TEST} Mywork/Drivative_test.f90)
+target_link_libraries(${DERIVATIVE_TEST} ${NEW_DERIVATIVE_CLASS} ${PRECISION})
+#SET(GENERALTEST generalTest)
 
 # Fannie program
 SET(TESTLSSOLVER testlssolver)
